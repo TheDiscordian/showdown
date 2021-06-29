@@ -60,23 +60,6 @@ You can download the latest release tarball directly from [releases][releases]
 
 The NuGet Packages can be [found here](https://www.nuget.org/packages/showdownjs/).
 
-### CDN
-
-You can also use one of several CDNs available: 
-
-* jsDelivr
-
-        https://cdn.jsdelivr.net/npm/showdown@<version tag>/dist/showdown.min.js
-
-* cdnjs
-
-        https://cdnjs.cloudflare.com/ajax/libs/showdown/<version tag>/showdown.min.js
-
-* unpkg
-       
-        https://unpkg.com/showdown/dist/showdown.min.js
-
-*Note*: replace `<version tag>` with an actual full length version you're interested in e.g. `1.9.0`
 ## Browser Compatibility
 
 Showdown has been tested successfully with:
