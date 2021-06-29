@@ -4,11 +4,11 @@
 showdown.subParser('makehtml.images', function (text, options, globals) {
   'use strict';
 
-  text = globals.converter._dispatch('makehtml.images.before', text, options, globals).getText();
-
   if (options.disableInlineImages) {
     return text;
   }
+
+  text = globals.converter._dispatch('makehtml.images.before', text, options, globals).getText();
 
   var inlineRegExp      = /!\[([^\]]*?)][ \t]*()\([ \t]?<?([\S]+?(?:\([\S]*?\)[\S]*?)?)>?(?: =([*\d]+[A-Za-z%]{0,4})x([*\d]+[A-Za-z%]{0,4}))?[ \t]*(?:(["'])([^"]*?)\6)?[ \t]?\)/g,
       crazyRegExp       = /!\[([^\]]*?)][ \t]*()\([ \t]?<([^>]*)>(?: =([*\d]+[A-Za-z%]{0,4})x([*\d]+[A-Za-z%]{0,4}))?[ \t]*(?:(?:(["'])([^"]*?)\6))?[ \t]?\)/g,
