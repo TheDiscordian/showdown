@@ -1,4 +1,4 @@
-;/*! showdown v 2.0.0-alpha1 - 24-10-2018 */
+;/*! showdown v 2.0.0-alpha1 - 29-06-2021 */
 (function(){
 /**
  * Created by Tivie on 13-07-2015.
@@ -8,6 +8,16 @@ function getDefaultOpts (simple) {
   'use strict';
 
   var defaultOptions = {
+    replaceOpenCarat: {
+      defaultValue: true,
+      describe: 'Replace < with &lt; outside of code blocks.',
+      type: 'boolean'
+    },
+    disableInlineImages: {
+      defaultValue: true,
+      describe: 'Don\'t process ![]() blocks.',
+      type: 'boolean'
+    },
     omitExtraWLInCodeBlocks: {
       defaultValue: false,
       describe: 'Omit the default extra whiteline added to code blocks',
@@ -2530,8 +2540,9 @@ showdown.subParser('makehtml.ellipsis', function (text, options, globals) {
 });
 
 /**
- * These are all the transformations that occur *within* block-level
- * tags like paragraphs, headers, and list items.
+ * Turn emoji codes into emojis
+ *
+ * List of supported emojis: https://github.com/showdownjs/showdown/wiki/Emojis
  */
 showdown.subParser('makehtml.emoji', function (text, options, globals) {
   'use strict';
@@ -3080,6 +3091,10 @@ showdown.subParser('makehtml.images', function (text, options, globals) {
 
   text = globals.converter._dispatch('makehtml.images.before', text, options, globals).getText();
 
+  if (options.disableInlineImages) {
+    return text;
+  }
+
   var inlineRegExp      = /!\[([^\]]*?)][ \t]*()\([ \t]?<?([\S]+?(?:\([\S]*?\)[\S]*?)?)>?(?: =([*\d]+[A-Za-z%]{0,4})x([*\d]+[A-Za-z%]{0,4}))?[ \t]*(?:(["'])([^"]*?)\6)?[ \t]?\)/g,
       crazyRegExp       = /!\[([^\]]*?)][ \t]*()\([ \t]?<([^>]*)>(?: =([*\d]+[A-Za-z%]{0,4})x([*\d]+[A-Za-z%]{0,4}))?[ \t]*(?:(?:(["'])([^"]*?)\6))?[ \t]?\)/g,
       base64RegExp      = /!\[([^\]]*?)][ \t]*()\([ \t]?<?(data:.+?\/.+?;base64,[A-Za-z0-9+/=\n]+?)>?(?: =([*\d]+[A-Za-z%]{0,4})x([*\d]+[A-Za-z%]{0,4}))?[ \t]*(?:(["'])([^"]*?)\6)?[ \t]?\)/g,
@@ -3363,7 +3378,7 @@ showdown.subParser('makehtml.italicsAndBold', function (text, options, globals) 
     // to external links. Hash links (#) open in same page
     if (options.openLinksInNewWindow && !/^#/.test(url)) {
       // escaped _
-      target = ' target="¨E95Eblank"';
+      target = ' rel="noopener noreferrer" target="¨E95Eblank"';
     }
 
     // Text can be a markdown element, so we run through the appropriate parsers
@@ -4051,6 +4066,9 @@ showdown.subParser('makehtml.spanGamut', function (text, options, globals) {
   text = globals.converter._dispatch('makehtml.span.before', text, options, globals).getText();
 
   text = showdown.subParser('makehtml.codeSpans')(text, options, globals);
+  if (options.replaceOpenCarat) {
+    text = text.replaceAll("<", "&lt;");
+  }
   text = showdown.subParser('makehtml.escapeSpecialCharsWithinTagAttributes')(text, options, globals);
   text = showdown.subParser('makehtml.encodeBackslashEscapes')(text, options, globals);
 
@@ -4374,6 +4392,12 @@ showdown.subParser('makeMarkdown.blockquote', function (node, globals) {
   return txt;
 });
 
+showdown.subParser('makeMarkdown.break', function () {
+  'use strict';
+
+  return '  \n';
+});
+
 showdown.subParser('makeMarkdown.codeBlock', function (node, globals) {
   'use strict';
 
@@ -4635,6 +4659,10 @@ showdown.subParser('makeMarkdown.node', function (node, globals, spansOnly) {
 
     case 'img':
       txt = showdown.subParser('makeMarkdown.image')(node, globals);
+      break;
+
+    case 'br':
+      txt = showdown.subParser('makeMarkdown.break')(node, globals);
       break;
 
     default:

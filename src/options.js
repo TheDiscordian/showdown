@@ -6,6 +6,16 @@ function getDefaultOpts (simple) {
   'use strict';
 
   var defaultOptions = {
+    replaceOpenCarat: {
+      defaultValue: true,
+      describe: 'Replace < with &lt; outside of code blocks.',
+      type: 'boolean'
+    },
+    disableInlineImages: {
+      defaultValue: true,
+      describe: 'Don\'t process ![]() blocks.',
+      type: 'boolean'
+    },
     omitExtraWLInCodeBlocks: {
       defaultValue: false,
       describe: 'Omit the default extra whiteline added to code blocks',

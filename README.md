@@ -1,5 +1,7 @@
 ![Showdown][sd-logo]
 
+This fork breaks tests and adds the options `replaceOpenCarat` to make results more XSS resistant and `disableInlineImages` which can be really handy in certain user input scenarios. Enjoy!
+
 [![Build Status: Linux](https://travis-ci.org/showdownjs/showdown.svg?branch=master)](https://travis-ci.org/showdownjs/showdown)
 [![Build Status: Windows](https://ci.appveyor.com/api/projects/status/github/showdownjs/showdown?branch=master&svg=true)](https://ci.appveyor.com/project/tivie/showdown/branch/master)
 [![npm version](https://badge.fury.io/js/showdown.svg)](http://badge.fury.io/js/showdown)
