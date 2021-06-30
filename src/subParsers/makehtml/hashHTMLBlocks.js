@@ -1,4 +1,4 @@
-showdown.subParser('makehtml.hashHTMLBlocks', function (text, options, globals) {
+showdown.subParser('makehtml.hashHTMLBlocks', function (text, options, globals, firstPass) {
   'use strict';
   text = globals.converter._dispatch('makehtml.hashHTMLBlocks.before', text, options, globals).getText();
 
@@ -69,9 +69,13 @@ showdown.subParser('makehtml.hashHTMLBlocks', function (text, options, globals) 
 
 
       //2. Split the text in that position
-      var subTexts = showdown.helper.splitAtIndex(text, opTagPos),
-      //3. Match recursively
-          newSubText1 = showdown.helper.replaceRecursiveRegExp(subTexts[1], repFunc, patLeft, patRight, 'im');
+      var subTexts = showdown.helper.splitAtIndex(text, opTagPos);
+      if (options.replaceOpenCarat && firstPass) {
+        var newSubText1 = subTexts[1].replaceAll("<", "&lt;");
+      } else {
+        //3. Match recursively
+        var newSubText1 = showdown.helper.replaceRecursiveRegExp(subTexts[1], repFunc, patLeft, patRight, 'im');
+      }
 
       // prevent an infinite loop
       if (newSubText1 === subTexts[1]) {
